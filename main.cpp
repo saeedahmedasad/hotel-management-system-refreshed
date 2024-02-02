@@ -2,9 +2,9 @@
 #include <conio.h>
 #include <Windows.h>
 
-#include "./bin/structs.h"
 #include "./bin/validate.h"
 #include "./bin/encryption.h"
+#include "./bin/fileSystem.h"
 
 using namespace std;
 
@@ -50,6 +50,14 @@ string getPassword();
 
 int main()
 {
+    clearScreen();
+    long long id = 4545;
+    bool success = deleteUser(id);
+    if (success)
+        cout << "Deleted Successfully" << endl;
+    else
+        cout << "Failed to delete" << endl;
+
     centerText(" ----------------------------------- ", BG_GREEN);
     centerText(" WELCOME TO HOTEL MANAGEMENT SYSTEM  ", BG_GREEN);
     centerText(" ----------------------------------- ", BG_GREEN);
@@ -126,15 +134,23 @@ void SignUp()
     while (true)
     {
         cin >> customer.id;
+        cin.ignore();
         if (!checkCNIC(to_string(customer.id)) || !isNumeric(to_string(customer.id)))
+        {
             cout << BG_RED << "Invalid CNIC, Enter Again: " << RESET;
+            continue;
+        }
         else
+        {
+
             break;
+        }
     }
     cout << "Enter Email: ";
     while (true)
     {
         cin >> customer.email;
+        cin.ignore();
         if (!checkEmail(customer.email))
             cout << BG_RED << "Invalid Email, Enter Again: " << RESET;
         else
@@ -145,6 +161,7 @@ void SignUp()
     while (true)
     {
         cin >> customer.phone;
+        cin.ignore();
         if (!checkPhoneNumber(customer.phone) || !isNumeric(customer.phone))
             cout << BG_RED << "Invalid Phone Number, Enter Again: " << RESET;
         else
@@ -156,11 +173,11 @@ void SignUp()
 
     while (true)
     {
-        while (!checkPasswordStrength(password))
+        password = getPassword();
+        if (!checkPasswordStrength(password))
         {
-            password = getPassword();
-            if (!checkPasswordStrength(password))
-                cout << BG_RED << "\nPassword is too weak, Enter Again: " << RESET;
+            cout << BG_RED << "\nPassword is too weak" << RESET << endl;
+            continue;
         }
 
         cout << "\nConfirm ";
@@ -168,7 +185,7 @@ void SignUp()
 
         if (password != confirmPassword)
         {
-            cout << BG_RED << "\nPasswords do not match" << RESET << endl;
+            cout << BG_RED << "\nPasswords do not match :( Please Enter Again " << RESET << endl;
             continue;
         }
 

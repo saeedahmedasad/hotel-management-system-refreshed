@@ -55,7 +55,9 @@ struct CurrentUser
     string phone;
     string password;
     long long id; // ID of the customer
+    string hotel_name;
     string role;
+    bool success;
 };
 
 CurrentUser currentUser; // keeping track of logged in user
