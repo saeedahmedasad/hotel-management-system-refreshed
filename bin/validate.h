@@ -1,4 +1,5 @@
 #include <regex>
+#include <conio.h>
 #include <string>
 
 using namespace std;
@@ -53,11 +54,21 @@ bool isNumeric(const string &str)
     }
     return true;
 }
+//! Clear the Screen
+void clearScreen()
+{
+#ifdef _WIN32
+    std::system("cls");
+#else
+    // Assume POSIX
+    std::system("clear");
+#endif
+}
 
 // Press to continue
 void pressToContinue()
 {
-    std::cout << "Press any key to continue...";
-    cin.ignore();
-    cin.get();
+    std::cout << "\nPress any key to continue...";
+    _getch();
+    clearScreen();
 }

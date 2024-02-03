@@ -1,5 +1,6 @@
 #include <iostream>
 #include <conio.h>
+#include <iomanip>
 #include <Windows.h>
 
 #include "./bin/validate.h"
@@ -8,16 +9,7 @@
 
 using namespace std;
 
-//! Clear the Screen
-void clearScreen()
-{
-#ifdef _WIN32
-    std::system("cls");
-#else
-    // Assume POSIX
-    std::system("clear");
-#endif
-}
+const string HOTEL_NAME = "Phooli Kothi";
 
 // Center the text
 #define RESET "\033[0m"
@@ -46,17 +38,14 @@ void centerText(const std::string &text, string color)
 // Login --------------
 void Login();
 void SignUp();
+void profile(CurrentUser);
+bool logout();
+void menu();
 string getPassword();
 
 int main()
 {
     clearScreen();
-    long long id = 4545;
-    bool success = deleteUser(id);
-    if (success)
-        cout << "Deleted Successfully" << endl;
-    else
-        cout << "Failed to delete" << endl;
 
     centerText(" ----------------------------------- ", BG_GREEN);
     centerText(" WELCOME TO HOTEL MANAGEMENT SYSTEM  ", BG_GREEN);
@@ -78,7 +67,6 @@ int main()
         break;
     case 2:
         clearScreen();
-        centerText(" Sign-up ", BG_YELLOW);
         SignUp();
         break;
     }
@@ -133,11 +121,19 @@ void SignUp()
     cout << "Enter CNIC: ";
     while (true)
     {
-        cin >> customer.id;
-        cin.ignore();
+        if (!(cin >> customer.id))
+        {
+            cin.clear();                                         // Clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            cout << BG_RED << "Invalid CNIC, Enter Again: " << RESET;
+            continue;
+        }
+
+        cin.ignore(); // Ignore the newline character
         if (!checkCNIC(to_string(customer.id)) || !isNumeric(to_string(customer.id)))
         {
             cout << BG_RED << "Invalid CNIC, Enter Again: " << RESET;
+            customer.id = 0;
             continue;
         }
         else
@@ -193,16 +189,159 @@ void SignUp()
         break;
     }
 
+    currentUser.first_name = customer.first_name;
+    currentUser.last_name = customer.last_name;
+    currentUser.id = customer.id;
+    currentUser.phone = customer.phone;
+    currentUser.password = customer.password;
+    currentUser.email = customer.email;
+    currentUser.role = "customer";
+    currentUser.success = true;
+    currentUser.hotel_name = HOTEL_NAME;
+
     clearScreen();
-    centerText(" Signed Up Successfully ", BG_GREEN);
-    cout << "First Name: " << customer.first_name << endl;
-    cout << "Last Name: " << customer.last_name << endl;
-    cout << "CNIC: " << customer.id << endl;
-    cout << "Email: " << customer.email << endl;
-    cout << "Phone: " << customer.phone << endl;
-    cout << "Password: " << customer.password << endl;
+    cout << "Your Account has been created successfully" << endl;
+    profile(currentUser);
 
     pressToContinue();
-    clearScreen();
     Login();
 }
+void hidePassword(string password)
+{
+    for (int i = 0; i < password.size(); i++)
+    {
+        cout << "*";
+    }
+}
+void profile(CurrentUser customer)
+{
+    clearScreen();
+    centerText(" Your Profile ", BG_YELLOW);
+
+    cout << setw(20) << left << "First Name: "
+         << customer.first_name << endl;
+    cout << setw(20) << left << "Last Name: "
+         << customer.last_name << endl;
+    cout << setw(20) << left << "CNIC: "
+         << customer.id << endl;
+    cout << setw(20) << left << "Email: "
+         << customer.email << endl;
+    cout << setw(20) << left << "Phone: "
+         << customer.phone << endl;
+    cout << setw(20) << left << "Password: ";
+    hidePassword(customer.password);
+    cout << endl;
+
+    pressToContinue();
+    menu();
+}
+
+void menu()
+{
+    centerText(" Menu ", BG_YELLOW);
+    if (currentUser.role == "owner")
+    {
+        cout << "1. View Room" << endl;
+        cout << "2. View Bookings" << endl;
+        cout << "3. Update Room" << endl;
+        cout << "4. Delete Room" << endl;
+        cout << "5. View Customers" << endl;
+        cout << "6. View Profile" << endl;
+        cout << "7. Logout" << endl;
+
+        int choice;
+        cout << "\nYour Choice: ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1:
+            // viewRooms();
+            break;
+        case 2:
+            // viewBookings();
+            break;
+        case 3:
+            // updateRoom();
+            break;
+        case 4:
+            // deleteRoom();
+            break;
+        case 5:
+            // viewCustomers();
+            break;
+        case 6:
+            profile(currentUser);
+            pressToContinue();
+            menu();
+            break;
+        case 7:
+            if (logout())
+            {
+                centerText("Logged Out Successfully", BG_GREEN);
+                pressToContinue();
+                main();
+            }
+            break;
+        default:
+        {
+            centerText("Invalid Choice", BG_RED);
+            pressToContinue();
+            menu();
+        }
+        }
+        else
+        {
+            cout << "1. View Available Rooms" << endl;
+            cout << "2. Book Room" << endl;
+            cout << "3. View Bookings" << endl;
+            cout << "4. View Profile" << endl;
+            cout << "5. Logout" << endl;
+
+            int choice;
+            cout << "\nYour Choice: ";
+            cin >> choice;
+            switch (choice)
+            {
+            case 1:
+                // viewAvailableRooms();
+                break;
+            case 2:
+
+                // bookRoom();
+                break;
+            case 3:
+                // viewBookings();
+                break;
+            case 4:
+                profile(currentUser);
+                pressToContinue();
+                menu();
+                break;
+            case 5:
+                logout();
+                pressToContinue();
+                menu();
+                break;
+            default:
+            {
+                centerText("Invalid Choice", BG_RED);
+                pressToContinue();
+                menu();
+            }
+            }
+        }
+    }
+
+    bool logout()
+    {
+        currentUser.success = false;
+        currentUser.first_name = "";
+        currentUser.last_name = "";
+        currentUser.email = "";
+        currentUser.phone = "";
+        currentUser.password = "";
+        currentUser.id = 0;
+        currentUser.role = "";
+        currentUser.hotel_name = "";
+        return true;
+    }
