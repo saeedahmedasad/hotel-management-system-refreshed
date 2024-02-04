@@ -24,17 +24,6 @@ struct Booking
     int roomKey;
 };
 
-struct Owner
-{
-    string first_name;
-    string last_name;
-    string email;
-    string phone;
-    string password;
-    long long id; // ID of the owner
-    string hotel_name;
-};
-
 // Structure for the Customer
 struct Customer
 {

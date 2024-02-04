@@ -9,7 +9,16 @@
 
 using namespace std;
 
-const string HOTEL_NAME = "Phooli Kothi";
+const string HOTEL_NAME = "Mikruniche Hotel";
+struct Owner{
+    string first_name = "Saeed";
+    string last_name = "Ahmed";
+    long long id = 3110552418059;
+    string email = "saeed@gmail.com";
+    string phone = "03001111598";
+    string password = "saeed1092";
+    string hotel_name = HOTEL_NAME;
+} owner;
 
 // Center the text
 #define RESET "\033[0m"
@@ -41,6 +50,7 @@ void SignUp();
 void profile(CurrentUser);
 bool logout();
 void menu();
+bool bookRoom();
 string getPassword();
 
 int main()
@@ -48,7 +58,7 @@ int main()
     clearScreen();
 
     centerText(" ----------------------------------- ", BG_GREEN);
-    centerText(" WELCOME TO HOTEL MANAGEMENT SYSTEM  ", BG_GREEN);
+    centerText(" WELCOME TO " + HOTEL_NAME, BG_GREEN);
     centerText(" ----------------------------------- ", BG_GREEN);
 
     int choice;
@@ -62,11 +72,9 @@ int main()
     switch (choice)
     {
     case 1:
-        clearScreen();
         Login();
         break;
     case 2:
-        clearScreen();
         SignUp();
         break;
     }
@@ -99,19 +107,38 @@ string getPassword()
 
 void Login()
 {
+    clearScreen();
     centerText(" Login ", BG_YELLOW);
 
-    string username, password;
+    long long id;
+    string password;
     cout << "Enter CNIC: ";
-    cin >> username;
+    cin >> id;
     password = getPassword();
 
-    cout << "Username: " << username << endl;
-    cout << "Password: " << password << endl;
+    if (id == owner.id && password == owner.password)
+    {
+        currentUser.first_name = owner.first_name;
+        currentUser.last_name = owner.last_name;
+        currentUser.email = owner.email;
+        currentUser.phone = owner.phone;
+        currentUser.password = owner.password;
+        currentUser.role = "owner";
+        currentUser.success = true;
+        currentUser.id = owner.id;
+        currentUser.hotel_name = owner.hotel_name;
+
+
+        clearScreen();
+        centerText("Logged in Successfully", BG_GREEN);
+        pressToContinue();
+        profile(currentUser);
+    }
 }
 
 void SignUp()
 {
+    clearScreen();
     centerText(" Sign-up ", BG_YELLOW);
     Customer customer;
     cout << "Enter First Name: ";
@@ -202,9 +229,6 @@ void SignUp()
     clearScreen();
     cout << "Your Account has been created successfully" << endl;
     profile(currentUser);
-
-    pressToContinue();
-    Login();
 }
 void hidePassword(string password)
 {
@@ -238,6 +262,7 @@ void profile(CurrentUser customer)
 
 void menu()
 {
+    clearScreen();
     centerText(" Menu ", BG_YELLOW);
     if (currentUser.role == "owner")
     {
@@ -283,65 +308,76 @@ void menu()
             }
             break;
         default:
-        {
             centerText("Invalid Choice", BG_RED);
             pressToContinue();
             menu();
         }
-        }
-        else
-        {
-            cout << "1. View Available Rooms" << endl;
-            cout << "2. Book Room" << endl;
-            cout << "3. View Bookings" << endl;
-            cout << "4. View Profile" << endl;
-            cout << "5. Logout" << endl;
-
-            int choice;
-            cout << "\nYour Choice: ";
-            cin >> choice;
-            switch (choice)
-            {
-            case 1:
-                // viewAvailableRooms();
-                break;
-            case 2:
-
-                // bookRoom();
-                break;
-            case 3:
-                // viewBookings();
-                break;
-            case 4:
-                profile(currentUser);
-                pressToContinue();
-                menu();
-                break;
-            case 5:
-                logout();
-                pressToContinue();
-                menu();
-                break;
-            default:
-            {
-                centerText("Invalid Choice", BG_RED);
-                pressToContinue();
-                menu();
-            }
-            }
-        }
     }
-
-    bool logout()
+    else
     {
-        currentUser.success = false;
-        currentUser.first_name = "";
-        currentUser.last_name = "";
-        currentUser.email = "";
-        currentUser.phone = "";
-        currentUser.password = "";
-        currentUser.id = 0;
-        currentUser.role = "";
-        currentUser.hotel_name = "";
-        return true;
+        cout << "1. View Available Rooms" << endl;
+        cout << "2. Book Room" << endl;
+        cout << "3. View Bookings" << endl;
+        cout << "4. View Profile" << endl;
+        cout << "5. Logout" << endl;
+
+        int choice;
+        cout << "\nYour Choice: ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1:
+            // viewAvailableRooms();
+            break;
+        case 2:
+            if(bookRoom()){
+                centerText("Room Booked Successfully", BG_GREEN);
+                pressToContinue();
+            }
+            menu();
+            break;
+        case 3:
+            // viewBookings();
+            break;
+        case 4:
+            profile(currentUser);
+            pressToContinue();
+            menu();
+            break;
+        case 5:
+            if (logout())
+            {
+                centerText("Logged Out Successfully", BG_GREEN);
+                pressToContinue();
+                main();
+            }
+            break;
+        default:
+            centerText("Invalid Choice", BG_RED);
+            pressToContinue();
+            menu();
+        }
     }
+}
+
+bool logout()
+{
+    clearScreen();
+    currentUser.success = false;
+    currentUser.first_name = "";
+    currentUser.last_name = "";
+    currentUser.email = "";
+    currentUser.phone = "";
+    currentUser.password = "";
+    currentUser.id = 0;
+    currentUser.role = "";
+    currentUser.hotel_name = "";
+    return true;
+}
+
+bool bookRoom()
+{
+    clearScreen();
+    centerText(" Book Room ", BG_YELLOW);
+    return true;
+}
