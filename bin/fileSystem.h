@@ -54,6 +54,7 @@ CurrentUser getUser(long long CNIC)
         if (user.id == CNIC)
         {
             user.success = true;
+            user.role = "customer";
             return user;
         }
     }
@@ -88,6 +89,7 @@ CurrentUser getUser(long long CNIC)
         if (user.id == CNIC)
         {
             user.success = true;
+            user.role = "onwer";
             return user;
         }
     }
@@ -280,4 +282,49 @@ bool deleteUser(long long ID)
     rename("customers/temp.csv", "customers/customers.csv");
 
     return true;
+}
+
+void getCustomers()
+{
+    // Open the file in read mode
+    ifstream file("customers/customers.csv");
+
+    // Check if the file is open
+    if (!file.is_open())
+    {
+        cout << "Unable to open file" << endl;
+        return;
+    }
+
+    // Read each line from the file
+    string line;
+    while (getline(file, line))
+    {
+        istringstream iss(line);
+
+        // Extract Data
+        string first_name;
+        string last_name;
+        string email;
+        string phone;
+        string password;
+        string hotel_name;
+        long long id;
+
+        getline(iss, first_name, ',');
+        getline(iss, last_name, ',');
+        getline(iss, email, ',');
+        getline(iss, phone, ',');
+        getline(iss, password, ',');
+        getline(iss, hotel_name, ',');
+        iss >> id;
+
+        string fullName = first_name + " " + last_name;
+
+        // Display the data
+        cout << left << setw(20) << id << left << setw(20) << fullName << left << setw(20) << phone << left << setw(20) << email << endl;
+    }
+
+    // Close the file
+    file.close();
 }

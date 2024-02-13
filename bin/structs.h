@@ -7,21 +7,6 @@ struct Date
     int day;
     int month;
     int year;
-    int hour;
-    int minute;
-    int second;
-};
-
-struct Booking
-{
-    long long bookingId;
-    Date checkIn;
-    Date checkOut;
-    int roomNumber;
-    int totalPrice;
-    int totalDays;
-    long long customerId;
-    int roomKey;
 };
 
 // Structure for the Customer
