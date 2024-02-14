@@ -17,7 +17,7 @@
 
 using namespace std;
 
-const string HOTEL_NAME = "Mikruniche Hotel ";
+const string HOTEL_NAME = "MIKRUNICHE HOTEL ";
 struct Owner
 {
     string first_name = "Saeed";
@@ -293,6 +293,9 @@ void profile(CurrentUser customer)
          << customer.phone << endl;
     cout << setw(20) << left << "Password: ";
     hidePassword(customer.password);
+
+    cout << endl;
+    cout << "_________________________________________________";
     cout << endl;
 
     pressToContinue();
@@ -311,6 +314,8 @@ void menu()
         cout << "4. View Customers" << endl;
         cout << "5. View Profile" << endl;
         cout << "6. Logout" << endl;
+
+        cout << "__________________________________________________" << endl;
 
         int choice;
         cout << "\nYour Choice: ";
@@ -336,6 +341,7 @@ void menu()
             clearScreen();
             cout << BG_GREEN << BOLD << left << setw(20) << "ID: " << left << setw(20) << "Full Name" << left << setw(20) << "Phone" << left << setw(20) << "Email" << RESET << endl;
             getCustomers();
+            cout << "__________________________________________________________________________________________" << endl;
             pressToContinue();
             menu();
             break;
@@ -614,6 +620,8 @@ bool bookRoom()
                  << left << setw(15) << date2
                  << left << setw(10) << booking.roomNumber
                  << left << setw(10) << booking.roomKey << RESET << endl;
+
+            cout << "__________________________________________________________________" << endl;
         }
         else
         {
@@ -642,10 +650,12 @@ void viewBookings()
     if (currentUser.role == "owner")
     {
         printBookings();
+        cout << "_________________________________________________________________________" << endl;
     }
     else
     {
         printBookings(currentUser.id);
+        cout << "__________________________________________________________________________" << endl;
     }
 }
 
@@ -728,12 +738,13 @@ void checkOut()
     if (isCheckedIn)
     {
         centerText("Checked Out Successfully", BG_GREEN);
+        isCheckedIn = false;
         pressToContinue();
         menu();
     }
     else
     {
-        centerText("You are not Checked In any of rooms", BG_RED);
+        centerText("You are not Checked In any of rooms, Please Check-in First! ", BG_RED);
         pressToContinue();
         menu();
     }
@@ -757,6 +768,7 @@ void deleteBooking()
         centerText("Invalid Booking ID", BG_RED);
         pressToContinue();
         menu();
+        return;
     }
 }
 
@@ -779,6 +791,7 @@ void viewRoom()
     {
         cout << BG_GREEN << left << setw(15) << "Booking ID" << left << setw(15) << "Check-in" << left << setw(15) << "Check-out" << left << setw(10) << "Room No" << left << setw(10) << "Room Key" << RESET << endl;
         printAllBookingsOfARoom(roomNo);
+        cout << "-----------------------------------------------------------------" << endl;
         pressToContinue();
         menu();
     }
